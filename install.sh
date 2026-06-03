@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 # cw (CodeWatch) installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/USER/codewatch/main/install.sh | sh
+# Usage:
+#   Install:   curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh
+#   Uninstall: curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh -s -- --uninstall
 
 set -e
 
@@ -17,6 +19,46 @@ NC='\033[0m'
 info()  { printf "${GREEN}[INFO]${NC} %s\n" "$1"; }
 warn()  { printf "${YELLOW}[WARN]${NC} %s\n" "$1"; }
 error() { printf "${RED}[ERROR]${NC} %s\n" "$1"; exit 1; }
+
+# --- Uninstall ---
+uninstall() {
+    info "Uninstalling $BINARY_NAME..."
+
+    # Remove binary
+    TARGET="${INSTALL_DIR}/${BINARY_NAME}"
+    if [ -f "$TARGET" ]; then
+        rm -f "$TARGET"
+        info "Removed $TARGET"
+    else
+        warn "$TARGET not found (already removed?)"
+    fi
+
+    # Remove shell aliases
+    SHELL_RC=""
+    if [ -f "$HOME/.zshrc" ]; then
+        SHELL_RC="$HOME/.zshrc"
+    elif [ -f "$HOME/.bashrc" ]; then
+        SHELL_RC="$HOME/.bashrc"
+    fi
+
+    if [ -n "$SHELL_RC" ] && grep -q '# >>> cw aliases >>>' "$SHELL_RC" 2>/dev/null; then
+        # Delete the alias block
+        sed -i.bak '/# >>> cw aliases >>>/,/# <<< cw aliases <<</d' "$SHELL_RC"
+        rm -f "${SHELL_RC}.bak"
+        info "Removed shell aliases from $SHELL_RC"
+        warn "Run 'source $SHELL_RC' or restart your terminal to apply"
+    fi
+
+    info "Done! cw has been uninstalled."
+    exit 0
+}
+
+# Parse flags
+case "${1:-}" in
+    --uninstall|-u) uninstall ;;
+esac
+
+# --- Install ---
 
 # Check if already installed
 if command -v "$BINARY_NAME" >/dev/null 2>&1; then
@@ -76,3 +118,4 @@ echo ""
 info "Done! Usage: cw <command> [args...]"
 info "Example:    cw codex \"fix the bug\""
 info "Aliases:    cw init --aliases   # add shell aliases for codex/claude"
+info "Uninstall:  curl -fsSL $REMOTE | sh -s -- --uninstall"

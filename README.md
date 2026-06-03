@@ -64,6 +64,14 @@ cw --stall-timeout 20 --notify-delay 30 codex "build feature"
 4. Agent waiting for input → countdown starts, notify if user doesn't return
 5. Agent exits → notify immediately
 
+## Uninstall
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh -s -- --uninstall
+```
+
+This removes the `cw` binary and any shell aliases added by `cw init --aliases`.
+
 ## Requirements
 
 - macOS (uses `osascript` for notifications)
