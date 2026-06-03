@@ -2,12 +2,12 @@
 
 ## What is cw?
 
-`cw` wraps CLI commands (codex, claude, etc.) in a PTY and sends macOS desktop notifications when:
-- ⏳ Command is likely **waiting for input** (no output for 30s)
-- ✅ Command **completed** successfully
-- ❌ Command **failed** (non-zero exit)
+`cw` wraps `codex` or `claude` in a PTY and sends macOS desktop notifications when the AI agent needs attention:
+- ⏳ Agent is **waiting for input** (no output for 30s → wait 60s → notify if user hasn't returned)
+- ✅ Agent **completed** (notify immediately)
+- ❌ Agent **failed** (notify immediately)
 
-After trigger, waits 60s — only notifies if the user hasn't returned to the terminal.
+**Only wrap the top-level agent command.** Internal commands run by the agent (`git status`, `npm test`, etc.) are transparent — no wrapping needed.
 
 ## Pre-Installation Check
 
@@ -62,34 +62,34 @@ To remove later: `cw init --uninstall-aliases`
 ## Usage
 
 ```bash
-# Via aliases (transparent)
+# Via aliases (transparent, recommended)
 codex "fix the login bug"       # automatically wrapped
 claude                           # automatically wrapped
 
-# Explicit wrapping
+# Explicit
 cw codex "fix the bug"
 cw claude
-cw npm test
 
 # Custom timeouts
 cw --stall-timeout 20 --notify-delay 30 codex "build feature"
 ```
+
+**Do NOT wrap internal commands.** The agent runs `git`, `npm`, `grep`, etc. internally — these are handled by the agent itself and need no wrapping.
 
 ## Options
 
 | Option | Default | Description |
 |--------|---------|-------------|
 | `--stall-timeout` | 30 | Seconds without output → "waiting for input" |
-| `--notify-delay` | 60 | Seconds after trigger → notify if user inactive |
+| `--notify-delay` | 60 | Seconds after stall trigger → notify if user inactive |
 
 ## How It Works
 
 1. Creates a PTY (pseudo-terminal) — full terminal compatibility (colors, keys, etc.)
 2. Bidirectional stdin/stdout forwarding — fully transparent
 3. Monitors output activity and process exit state
-4. On trigger: countdown starts
-5. If no stdin activity during countdown → macOS notification with sound
-6. If user types → countdown cancelled
+4. Agent waiting for input → countdown starts → notify if user doesn't return
+5. Agent exits → notify immediately
 
 ## Requirements
 
@@ -110,4 +110,4 @@ Before each session:
 - [ ] If not installed → `curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh`
 - [ ] Check if aliases are set: `grep "cw (CodeWatch)" ~/.zshrc`
 - [ ] If not set → `cw init --aliases`
-- [ ] When running codex/claude, always use `cw codex ...` or ensure aliases are active
+- [ ] When running codex/claude, use `cw codex ...` or ensure aliases are active
