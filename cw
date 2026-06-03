@@ -111,11 +111,14 @@ def run_command(cmd, stall_timeout, notify_delay):
         for title, msg in to_fire:
             notify(title, msg)
 
-    def schedule(title, msg):
+    def schedule(title, msg, immediate=False):
         for _, t, _ in pending_notifies:
             if t == title:
                 return
         pending_notifies.append((time.time(), title, msg))
+        # Exit events (complete/fail) fire immediately
+        if immediate:
+            fire_pending()
 
     def on_sigwinch(signum, frame):
         try:
@@ -145,9 +148,9 @@ def run_command(cmd, stall_timeout, notify_delay):
             if poll_ret is not None and not exit_notified:
                 exit_code = poll_ret
                 if exit_code == 0:
-                    schedule("✅ CodeWatch", f"{cmd_str} — 已完成")
+                    schedule("✅ CodeWatch", f"{cmd_str} — 已完成", immediate=True)
                 else:
-                    schedule("❌ CodeWatch", f"{cmd_str} — 失败 (exit {exit_code})")
+                    schedule("❌ CodeWatch", f"{cmd_str} — 失败 (exit {exit_code})", immediate=True)
                 exit_notified = True
 
             fire_pending()
