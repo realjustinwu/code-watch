@@ -4,7 +4,7 @@
 
 set -e
 
-REPO="wuchengbin/codewatch"
+REPO="realjustinwu/code-watch"
 BINARY_NAME="cw"
 INSTALL_DIR="${CW_INSTALL_DIR:-$HOME/.local/bin}"
 

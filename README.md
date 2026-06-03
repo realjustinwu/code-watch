@@ -22,7 +22,7 @@ cw codex "fix the login bug"
 
 ```bash
 # Quick install (macOS / Linux)
-curl -fsSL https://raw.githubusercontent.com/wuchengbin/codewatch/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh
 
 # Verify
 cw --version

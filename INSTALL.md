@@ -20,7 +20,7 @@ cw --version    # If found, already installed — skip to "Aliases"
 ### Quick Install (macOS / Linux)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wuchengbin/codewatch/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh
 ```
 
 Installs to `~/.local/bin/cw`. Verify:
@@ -33,7 +33,7 @@ cw --version    # Should show "cw 0.2.0"
 
 ```bash
 mkdir -p ~/.local/bin
-curl -fsSL https://raw.githubusercontent.com/wuchengbin/codewatch/main/cw -o ~/.local/bin/cw
+curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/cw -o ~/.local/bin/cw
 chmod +x ~/.local/bin/cw
 ```
 
@@ -107,7 +107,7 @@ rm ~/.local/bin/cw             # remove binary
 
 Before each session:
 - [ ] Check if cw is installed: `cw --version`
-- [ ] If not installed → `curl -fsSL https://raw.githubusercontent.com/wuchengbin/codewatch/main/install.sh | sh`
+- [ ] If not installed → `curl -fsSL https://raw.githubusercontent.com/realjustinwu/code-watch/main/install.sh | sh`
 - [ ] Check if aliases are set: `grep "cw (CodeWatch)" ~/.zshrc`
 - [ ] If not set → `cw init --aliases`
 - [ ] When running codex/claude, always use `cw codex ...` or ensure aliases are active
